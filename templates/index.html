@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates � Unblocked Games GPlus</title>
+        <!-- jQuery kütüphanesini yükleyin (cdn kullanılabilir) -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<meta name="description" content="Unblocked Games GPlus" />
+<meta name="robots" content="noindex, nofollow" />
+</head>
+<body>
+    <h1>DigitalOcean Spaces'e Resim Yükleme</h1>
+    
+    {% if success %}
+        <p style="color: green;">{{ success }}</p>
+    {% endif %}
+    
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+
+
+    <style>
+        .delete-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: transparent;
+            border: none;
+            color: red;
+            font-size: 20px; /* X işareti için font boyutunu ayarlayın */
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+    
+        .delete-button:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <form id="uploadForm" enctype="multipart/form-data">
+        <!-- multiple özelliği ile birden fazla dosya seçimi -->
+        <input type="file" name="files" accept=".jpg, .jpeg, .png, .gif" required multiple onchange="previewImages(this)">
+        <button type="button" onclick="submitForm()">Yükle</button>
+    </form>
+    
+    <!-- Resim önizleme için boş bir div -->
+    <div id="imagePreviews" style="display: flex; flex-wrap: wrap;"></div>
+    
+    <script>
+        var uploadedImages = [];
+    
+        function previewImages(input) {
+            var previewContainer = document.getElementById('imagePreviews');
+            previewContainer.innerHTML = '';
+    
+            for (var i = 0; i < input.files.length; i++) {
+                var file = input.files[i];
+                var reader = new FileReader();
+    
+                reader.onload = (function (file) {
+                    return function (e) {
+                        var imgContainer = document.createElement('div');
+                        imgContainer.style.position = 'relative';
+    
+                        var img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '100px';
+                        img.style.maxHeight = '100px';
+                        imgContainer.appendChild(img);
+    
+                        // Silme butonu ekle
+                        var deleteButton = document.createElement('button');
+                        deleteButton.className = 'delete-button'; // Yeni eklenen class
+                        deleteButton.innerHTML = 'X';
+                        deleteButton.onclick = function() {
+                            imgContainer.remove();
+                            // Yüklenen resmi listeden çıkar
+                            uploadedImages = uploadedImages.filter(function(item) {
+                                return item !== file;
+                            });
+                        };
+    
+                        imgContainer.appendChild(deleteButton);
+                        previewContainer.appendChild(imgContainer);
+    
+                        // Yüklenen resimleri listeye ekle
+                        uploadedImages.push(file);
+                    };
+                })(file);
+    
+                if (file) {
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+    
+        function submitForm() {
+            var formData = new FormData();
+            for (var i = 0; i < uploadedImages.length; i++) {
+                formData.append('files', uploadedImages[i]);
+            }
+    
+            $.ajax({
+                url: '/upload',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    console.log(response);
+                    // Başarı durumunu işleyebilirsiniz, örneğin bir mesaj gösterebilirsiniz.
+                    alert("Dosyalar Yüklendi!");
+                },
+                error: function(error) {
+                    console.error(error);
+                    // Hata durumunu işleyebilirsiniz, örneğin bir hata mesajı gösterebilirsiniz.
+                    alert("Dosyalar Yüklenemedi!");
+                }
+            });
+        }
+    </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    <br>
+
+    <a href="show_image?file_name=20240101/5554443322/20240101023556_1.jpeg">resimi goster</a>
+    <a href="bildirim">bildirimler</a>
+    
+    <a href="send-whatsapp-message">send-whatsapp-message</a>
+</body>
+</html>
+
+
